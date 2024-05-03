@@ -88,7 +88,7 @@ def calculateMemorySurprisalTradeoff(train, dev, args):
     newProbability = [None for _ in idev]
     
     devSurprisalTable = []
-    for k in range(0,args.cutoff):
+    for k in range(0,args["cutoff"]):
 #       print(k)
        startK, endK = getStartEnd(k) # Possible speed optimization: There is some redundant computation here, could be reused from the previous iteration. But the algorithm is very fast already.
        startK2, endK2 = getStartEnd(k+1)
@@ -115,7 +115,7 @@ def calculateMemorySurprisalTradeoff(train, dev, args):
        
                prefixStart, prefixEnd = startK[prefixIndex], endK[prefixIndex]
                countPrefix = prefixEnd-prefixStart
-               if countPrefix < args.gamma: # there is nothing to interpolate with, just back off
+               if countPrefix < args["gamma"]: # there is nothing to interpolate with, just back off
                   assert k > 0
                   newProbability[j] = lastProbability[j]
                else:
@@ -135,12 +135,12 @@ def calculateMemorySurprisalTradeoff(train, dev, args):
                       newProbability[j] = lastProbability[j]
                   else:
                       #assert countNgram > 0 # Sanity check when using the naive estimator only.
-                      probability = log(max(countNgram - args.alpha, 0.0) + args.alpha * followingCount * exp(lastProbability[j])) -  log(countPrefix)
+                      probability = log(max(countNgram - args["alpha"], 0.0) + args["alpha"] * followingCount * exp(lastProbability[j])) -  log(countPrefix)
                       newProbability[j] = probability
              else:
                 newProbability[j] = lastProbability[j]
           elif k == 0:
-                  probability = log(countNgram + args.delta) - log(len(train) + args.delta * len(itos))
+                  probability = log(countNgram + args["delta"]) - log(len(train) + args["delta"] * len(itos))
                   newProbability[j] = probability
        lastProbability = newProbability 
        newProbability = [None for _ in idev]
